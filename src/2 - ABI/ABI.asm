@@ -97,18 +97,19 @@ alternate_sum_4_using_c_alternative:
 
 
 ; uint32_t alternate_sum_8(uint32_t x1, uint32_t x2, uint32_t x3, uint32_t x4, uint32_t x5, uint32_t x6, uint32_t x7, uint32_t x8);
-; registros y pila: x1[?], x2[?], x3[?], x4[?], x5[?], x6[?], x7[?], x8[?]
+; registros y pila: x1[EDI], x2[ESI], x3[EDX], x4[ECX], x5[R8D], x6[R9D], x7[RBP + 0x10], x8[RBP + 0x18]
 alternate_sum_8:
 	;prologo
 
 	push RBP ;pila alineada
   mov RBP, RSP ;strack frame armado
 
-  mov R12D, EDX ; guardo los parámetros x3 y x4 ya que están en registros volátiles
-  mov R13D, ECX ; y tienen que sobrevivir al llamado a función
+  mov R12D, EDX ; guardo los parámetros x3  ya que están en registros volátiles
+  mov R13D, ECX ; guardo x4
+  mov R14D, R8D ; guardo x5
+  mov R15D, R9D ; guardo x6
 
   call restar_c ; x1-x2
-  ;recibe los parámetros por EDI y ESI, de acuerdo a la convención, y resulta que ya tenemos los valores en esos registros
   
   mov EDI, EAX ;tomamos el resultado del llamado anterior y lo pasamos como primer parámetro
   mov ESI, R12D
@@ -119,11 +120,11 @@ alternate_sum_8:
   call restar_c ;res - x4
 
   mov EDI, EAX ;tomamos el resultado del llamado anterior y lo pasamos como primer parámetro
-  mov ESI, R8D
+  mov ESI, R14D
   call sumar_c ;res + x5
 
   mov EDI, EAX
-  mov ESI, R9D
+  mov ESI, R15D
   call restar_c ; res - x6
   
   mov EDI, EAX ;tomamos el resultado del llamado anterior y lo pasamos como primer parámetro
@@ -136,6 +137,7 @@ alternate_sum_8:
 
 
 	;epilogo
+  pop RBP
 	ret
 
 
