@@ -101,7 +101,39 @@ alternate_sum_4_using_c_alternative:
 alternate_sum_8:
 	;prologo
 
-	; COMPLETAR
+	push RBP ;pila alineada
+  mov RBP, RSP ;strack frame armado
+
+  mov R12D, EDX ; guardo los parámetros x3 y x4 ya que están en registros volátiles
+  mov R13D, ECX ; y tienen que sobrevivir al llamado a función
+
+  call restar_c ; x1-x2
+  ;recibe los parámetros por EDI y ESI, de acuerdo a la convención, y resulta que ya tenemos los valores en esos registros
+  
+  mov EDI, EAX ;tomamos el resultado del llamado anterior y lo pasamos como primer parámetro
+  mov ESI, R12D
+  call sumar_c ;res + x3
+
+  mov EDI, EAX
+  mov ESI, R13D
+  call restar_c ;res - x4
+
+  mov EDI, EAX ;tomamos el resultado del llamado anterior y lo pasamos como primer parámetro
+  mov ESI, R8D
+  call sumar_c ;res + x5
+
+  mov EDI, EAX
+  mov ESI, R9D
+  call restar_c ; res - x6
+  
+  mov EDI, EAX ;tomamos el resultado del llamado anterior y lo pasamos como primer parámetro
+  mov ESI, [RBP + 0x10]
+  call sumar_c ;res + x7
+
+  mov EDI, EAX
+  mov ESI, [RBP + 0x18]
+  call restar_c ; res - x8
+
 
 	;epilogo
 	ret
