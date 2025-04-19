@@ -143,10 +143,13 @@ alternate_sum_8:
 
 ; SUGERENCIA: investigar uso de instrucciones para convertir enteros a floats y viceversa
 ;void product_2_f(uint32_t * destination, uint32_t x1, float f1);
-;registros: destination[EBX], x1[EAX], f1[EDI]
+;registros: destination[RDI], x1[ESI], f1[xmm0]
 product_2_f:
-  CVTPS2DQ EDI;
-  mul EDI;
+  movd xmm1, ESI; lo paso a un este registro SIMD
+  cvtdq2ps xmm1,xmm1; convierto el entero a float
+  mulss xmm1, xmm0; multiplico los floats
+  cvtps2dq xmm1, xmm1; convierto el float en entero
+  movd [RDI], xmm1; muevo el entero al regustro destination
 	ret
 
 
