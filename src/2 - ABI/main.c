@@ -10,6 +10,7 @@
 int main() {
 	/* Acá pueden realizar sus propias pruebas */
 	uint32_t res;  
+	double res2;
 	assert(alternate_sum_4_using_c(8, 2, 5, 1) == 10);
 
 	assert(alternate_sum_4_using_c_alternative(8, 2, 5, 1) == 10);
@@ -18,5 +19,8 @@ int main() {
 
 	product_2_f(&res, 10, 2.5f);
 	assert( res == 25);
+
+	product_9_f(&res2, 1, 1.0f, 2, 2.0f, 3, 3.0f, 4, 4.0f, 5, 5.0f, 6, 6.0f, 7, 7.0f, 8, 8.0f, 9, 9.0f);
+	assert(res2 ==285.0);
 	return 0;
 }
