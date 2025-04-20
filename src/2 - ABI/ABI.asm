@@ -203,12 +203,10 @@ product_9_f:
   cvtsi2sd xmm1, esp
   mulsd xmm0,xmm1 
   ; muevo los que tenia en el stack
-  mov eax, [RBP + 0x10]
-  movd xmm1, eax
-  cvtsi2sd xmm1, eax
+  cvtsi2sd xmm1, [RBP + 0x10]
   mulsd xmm0,xmm1
   ; muevo el resultado de xmm0 al destino
-  movd [rsi], xmm0
+  movd [RDI], xmm0
 
 	; epilogo
 	pop rbp
