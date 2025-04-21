@@ -145,9 +145,11 @@ alternate_sum_8:
 ;void product_2_f(uint32_t * destination, uint32_t x1, float f1);
 ;registros: destination[RDI], x1[ESI], f1[xmm0]
 product_2_f:
-  cvtss2si EAX, xmm0; convierto el float en entero
-  mul ESI; los multiplico
-  mov [RDI], EAX; los guardo en el registro destino
+  cvtss2sd xmm0, xmm0; convierto el float en entero
+  cvtsi2sd xmm1, ESI 
+  mulsd xmm1, xmm0 ;mul ESI; los multiplico
+  cvttsd2si ESI, xmm1
+  mov [RDI], ESI; los guardo en el registro destino
   ret
   ;cvtsi2ss xmm1,ESI; convierto el entero a float
   ;mulss xmm1, xmm0; multiplico los floats

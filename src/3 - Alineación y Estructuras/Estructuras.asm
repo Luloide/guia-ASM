@@ -31,15 +31,18 @@ global cantidad_total_de_elementos_packed
 ;extern uint32_t cantidad_total_de_elementos(lista_t* lista);
 ;registros: lista[RDI]
 cantidad_total_de_elementos:
-	mov RAX, 0 ; inicializo en 0 la cantidad de elementos
-	mov RBX, [RDI]; agarro el primer nodo
+	xor RAX, RAX ; inicializo en 0 la cantidad de elementos
+	mov RDI, [RDI]; agarro el head
+	; chequear si ese head es null (lista vacia)
+	cmp RDI, 0
+	je .terminar
 	
 .loop:
-	test RDI, [RDI]; chequeo que haya proximo nodo
-	je .terminar;si no es nulo
 	; longitud esta a 12 bytes de distancia desde el inicio
 	add RAX, [RDI + NODO_OFFSET_LONGITUD] ; agrego la longitud a la cantidad de elementos actuales
-	mov RDI, [RDI]; cargo el proximo nodo
+	mov RDI, [RDI]; agarro el proximo nodo
+	cmp RDI, 0; chequeo que proximo nodo no sea nulo
+	je .terminar;si no es nulo
 	jmp .loop
 
 .terminar:
@@ -49,4 +52,19 @@ cantidad_total_de_elementos:
 ;extern uint32_t cantidad_total_de_elementos_packed(packed_lista_t* lista);
 ;registros: lista[?]
 cantidad_total_de_elementos_packed:
+		xor RAX, RAX ; inicializo en 0 la cantidad de elementos
+	mov RDI, [RDI]; agarro el head
+	; chequear si ese head es null (lista vacia)
+	cmp RDI, 0
+	je .terminar
+	
+.loop:
+	; longitud esta a 12 bytes de distancia desde el inicio
+	add RAX, [RDI + PACKED_NODO_OFFSET_LONGITUD] ; agrego la longitud a la cantidad de elementos actuales
+	mov RDI, [RDI]; agarro el proximo nodo
+	cmp RDI, 0; chequeo que proximo nodo no sea nulo
+	je .terminar;si no es nulo
+	jmp .loop
+
+.terminar:
 	ret

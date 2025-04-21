@@ -18,5 +18,11 @@ int main() {
 	nodo_t nodo1 = {NULL,1,NULL,8};
 	lista.head = &nodo1;
 	assert(cantidad_total_de_elementos(&lista) == 8);
+
+	// lista con mas de un nodo
+	lista_t lista2;
+	nodo_t nodo2 ={&nodo1,1,NULL, 10};
+	lista2.head = &nodo2;
+	assert(cantidad_total_de_elementos(&lista2) == 18);
 	return 0;
 }
