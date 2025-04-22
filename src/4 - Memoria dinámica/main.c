@@ -13,5 +13,9 @@ int main() {
 	assert(strLen("") == 0);
 	assert(strLen("a") == 1);
 	assert(strLen("hola") == 4);
+
+	// test strcmp
+
+	assert(strCmp("", "a") == 1);
 	return 0;
 }
