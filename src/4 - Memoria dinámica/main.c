@@ -9,5 +9,9 @@
 
 int main() {
 	/* Acá pueden realizar sus propias pruebas */
+	// test strLen
+	assert(strLen("") == 0);
+	assert(strLen("a") == 1);
+	assert(strLen("hola") == 4);
 	return 0;
 }
