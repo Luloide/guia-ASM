@@ -16,23 +16,32 @@ global strLen
 
 ; int32_t strCmp(char* a, char* b)
 strCmp:
+	;a viene en RDI y b viene en RSI
 	xor RAX, RAX
+	; me guardo a y b en otro lado
+	mov R14, RDI
+	mov R15, RSI
+
+	;CALCULO LONGITUDES
 	; si las longitudes no son iguales, los strings son diferentes seguro
 	call strLen ; calculo la longitud de a
 	mov R8, RAX ; guardo la len de a
-	mov RDX, RDI; guardo a en otro lado
 	mov RDI, RSI ;muevo b a donde esta a asi puedo llamar a la fucnion correctamente
 	call strLen ; calculo la longitud de b
 	mov R9, RAX ; guardo len de b
 	cmp R8, R9
-	jne .terminar 
+	jne .lendistintas
+	mov RDI, R14; repongo a 
+	mov RSI, R15; repongo b
+	xor RAX, RAX ; pongo en 0 el res ya que por ahora asumo que son iguales 
 
 	; ahora comparo caracter a caracter si son iguales
 .loop:
 	cmp [RDI], BYTE 0 ; me fijo si es nulo
 	je .terminar
-	mov RCX, [RDX]
-	cmp [RDI], RCX ; me fijo que sean iguales los caracteres
+	mov BH, BYTE [RDI] ; agarro el caracter de a
+	mov BL, BYTE [RSI] ; agarro el caracter de b
+	cmp BH, BL ; me fijo que sean iguales los caracteres
 	je .rutinaIguales
 	inc RAX ; si no son iguales devuelvo 1
 	ret
@@ -41,6 +50,9 @@ strCmp:
 	inc RDI
 	inc RDX
 	jmp .loop
+
+.lendistintas:
+	
 
 .terminar:
 	ret
