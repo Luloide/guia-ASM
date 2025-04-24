@@ -18,13 +18,22 @@ global strLen
 strCmp:
 	;a viene en RDI y b viene en RSI
 	xor RAX, RAX
+	cmp [RDI], BYTE 0 ; a es vacio?
+	je .chequearB
+	cmp [RSI], BYTE 0 ; b es vacio?
+	je .amayor ;si a es vacia y b no gana b
+	jmp .loop
+
+.chequearB:
+	cmp [RSI], BYTE 0; ; si a es vacia y b tambien son iguales
+	je .terminar
+	inc RAX ; caso a vacio b no es vacio
+	ret
+
 
 .loop:
 	cmp [RDI], BYTE 0 ; me fijo si a es nulo
-	je .terminar
-	cmp [RSI], BYTE 0 ; me fijo si a es nulo
-	je .terminar
-
+	je .chequearBtermino ; me fijo si b es nulo, si lo es ambos son iguales sino b gana
 
 	mov BH, BYTE [RDI] ; agarro el caracter de a
 	mov BL, BYTE [RSI] ; agarro el caracter de b
@@ -34,28 +43,31 @@ strCmp:
 	; si a > b
 	jg .amayor
 	; sino b < a
-	dec RAX ; si no son iguales devuelvo -1
+	inc RAX ; si no son iguales devuelvo 1 pues b es mayor
 	ret
 
 .amayor:
-	inc RAX ; si no son iguales devuelvo 1
+	dec RAX ; 
 	ret
 
 
 .rutinaIguales:
 	inc RDI
-	inc RDX
+	inc RSI
 	jmp .loop
 
-.lendistintas:
-
+.chequearBtermino:
+	cmp [RSI], BYTE 0 ; me fijo si b es nulo
+	je .terminar
+	inc RAX
+	ret
 
 .terminar:
 	ret
 
 ; char* strClone(char* a)
 strClone:
-	push RBX
+	push RBX ; como es volatil lo debo de restablecer
 	; calculo cuanta memoria tengo que pedir con strlen
 	mov RBX, RDI        ; guardar el puntero original a
     call strLen         ; calcula longitud
@@ -63,7 +75,7 @@ strClone:
     mov RDI, RAX		; muevo cuanto tengo que pedir de memoria a rdi asi llamo a malloc
     call malloc         ; pido la memoria
     mov R8, RAX        ; guardo el puntero destino
-	
+
 .recorrer:
 	; si llegue al final termino
 	cmp [RBX], BYTE 0
@@ -85,6 +97,8 @@ strClone:
 
 ; void strDelete(char* a)
 strDelete:
+	; me pasan un puntero por RDI
+	call free ; freeo ese puntero?
 	ret
 
 ; void strPrint(char* a, FILE* pFile)
