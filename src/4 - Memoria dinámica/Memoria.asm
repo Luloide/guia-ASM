@@ -55,29 +55,30 @@ strCmp:
 
 ; char* strClone(char* a)
 strClone:
+	push RBX
 	; calculo cuanta memoria tengo que pedir con strlen
 	mov RBX, RDI        ; guardar el puntero original a
     call strLen         ; calcula longitud
     inc RAX             ; incluye el '\0'
     mov RDI, RAX		; muevo cuanto tengo que pedir de memoria a rdi asi llamo a malloc
     call malloc         ; pido la memoria
-    mov RBP, RAX        ; guardo el puntero destino
-
+    mov R8, RAX        ; guardo el puntero destino
+	
 .recorrer:
 	; si llegue al final termino
 	cmp [RBX], BYTE 0
 	je .terminar
 	
 	;sino copio la letra
-	mov BL, [RAX]
-	mov BL, BYTE [RBX]
+	mov DL, BYTE [RBX]
+	mov [R8], DL
 	inc RBX
-	inc RAX
+	inc R8
 	jmp .recorrer
 
 .terminar:
-	mov [RAX], BYTE 0 ; me guardo el \0
-	mov RAX, RBP ; restauro al puntero copiado
+	mov [R8], BYTE 0 ; me guardo el \0
+	pop RBX
 	ret
 
 
