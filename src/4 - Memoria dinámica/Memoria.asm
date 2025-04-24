@@ -18,33 +18,29 @@ global strLen
 strCmp:
 	;a viene en RDI y b viene en RSI
 	xor RAX, RAX
-	; me guardo a y b en otro lado
-	mov R14, RDI
-	mov R15, RSI
 
-	;CALCULO LONGITUDES
-	; si las longitudes no son iguales, los strings son diferentes seguro
-	call strLen ; calculo la longitud de a
-	mov R8, RAX ; guardo la len de a
-	mov RDI, RSI ;muevo b a donde esta a asi puedo llamar a la fucnion correctamente
-	call strLen ; calculo la longitud de b
-	mov R9, RAX ; guardo len de b
-	cmp R8, R9
-	jne .lendistintas
-	mov RDI, R14; repongo a 
-	mov RSI, R15; repongo b
-	xor RAX, RAX ; pongo en 0 el res ya que por ahora asumo que son iguales 
-
-	; ahora comparo caracter a caracter si son iguales
 .loop:
-	cmp [RDI], BYTE 0 ; me fijo si es nulo
+	cmp [RDI], BYTE 0 ; me fijo si a es nulo
 	je .terminar
+	cmp [RSI], BYTE 0 ; me fijo si a es nulo
+	je .terminar
+
+
 	mov BH, BYTE [RDI] ; agarro el caracter de a
 	mov BL, BYTE [RSI] ; agarro el caracter de b
 	cmp BH, BL ; me fijo que sean iguales los caracteres
 	je .rutinaIguales
+	; si no son iguales tengo que comparar su orden lexografico
+	; si a > b
+	jg .amayor
+	; sino b < a
+	dec RAX ; si no son iguales devuelvo -1
+	ret
+
+.amayor:
 	inc RAX ; si no son iguales devuelvo 1
 	ret
+
 
 .rutinaIguales:
 	inc RDI
@@ -52,14 +48,39 @@ strCmp:
 	jmp .loop
 
 .lendistintas:
-	
+
 
 .terminar:
 	ret
 
 ; char* strClone(char* a)
 strClone:
+	; calculo cuanta memoria tengo que pedir con strlen
+	mov RBX, RDI        ; guardar el puntero original a
+    call strLen         ; calcula longitud
+    inc RAX             ; incluye el '\0'
+    mov RDI, RAX		; muevo cuanto tengo que pedir de memoria a rdi asi llamo a malloc
+    call malloc         ; pido la memoria
+    mov RBP, RAX        ; guardo el puntero destino
+
+.recorrer:
+	; si llegue al final termino
+	cmp [RBX], BYTE 0
+	je .terminar
+	
+	;sino copio la letra
+	mov BL, [RAX]
+	mov BL, BYTE [RBX]
+	inc RBX
+	inc RAX
+	jmp .recorrer
+
+.terminar:
+	mov [RAX], BYTE 0 ; me guardo el \0
+	mov RAX, RBP ; restauro al puntero copiado
 	ret
+
+
 
 ; void strDelete(char* a)
 strDelete:
