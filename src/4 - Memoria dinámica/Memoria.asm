@@ -17,7 +17,7 @@ global strLen
 ; int32_t strCmp(char* a, char* b)
 strCmp:
 	;a viene en RDI y b viene en RSI
-	xor RAX, RAX
+	xor EAX, EAX
 	cmp [RDI], BYTE 0 ; a es vacio?
 	je .chequearB
 	cmp [RSI], BYTE 0 ; b es vacio?
@@ -27,7 +27,7 @@ strCmp:
 .chequearB:
 	cmp [RSI], BYTE 0; ; si a es vacia y b tambien son iguales
 	je .terminar
-	inc RAX ; caso a vacio b no es vacio
+	inc EAX ; caso a vacio b no es vacio
 	ret
 
 
@@ -43,11 +43,11 @@ strCmp:
 	; si a > b
 	jg .amayor
 	; sino b < a
-	inc RAX ; si no son iguales devuelvo 1 pues b es mayor
+	inc EAX ; si no son iguales devuelvo 1 pues b es mayor
 	ret
 
 .amayor:
-	dec RAX ; 
+	dec EAX ; 
 	ret
 
 
@@ -59,7 +59,7 @@ strCmp:
 .chequearBtermino:
 	cmp [RSI], BYTE 0 ; me fijo si b es nulo
 	je .terminar
-	inc RAX
+	inc EAX
 	ret
 
 .terminar:
@@ -67,7 +67,13 @@ strCmp:
 
 ; char* strClone(char* a)
 strClone:
-	push RBX ; como es volatil lo debo de restablecer
+	;prologo
+	push RBP ;pila alineada
+  	mov RBP, RSP ;strack frame armado
+
+	push RBX ; como es no volatil lo debo de restablecer
+	sub RSP, 8 ; alinear
+
 	; calculo cuanta memoria tengo que pedir con strlen
 	mov RBX, RDI        ; guardar el puntero original a
     call strLen         ; calcula longitud
@@ -90,15 +96,24 @@ strClone:
 
 .terminar:
 	mov [R8], BYTE 0 ; me guardo el \0
+
+
+	add RSP, 8 ; alinear
 	pop RBX
+	;epilogo
+	;mov RSP, RBP 
+	pop RBP
 	ret
 
 
 
 ; void strDelete(char* a)
 strDelete:
+	push RBP
+	mov RBP, RSP
 	; me pasan un puntero por RDI
 	call free ; freeo ese puntero?
+	pop RBP
 	ret
 
 ; void strPrint(char* a, FILE* pFile)

@@ -151,11 +151,6 @@ product_2_f:
   cvttsd2si ESI, xmm1
   mov [RDI], ESI; los guardo en el registro destino
   ret
-  ;cvtsi2ss xmm1,ESI; convierto el entero a float
-  ;mulss xmm1, xmm0; multiplico los floats
-  ;cvtss2si EAX, xmm1; convierto el float en entero
-  ;mov [RDI], EAX; muevo el entero al regustro destination
-	;ret
 
 
 ;extern void product_9_f(double * destination
@@ -167,8 +162,8 @@ product_2_f:
 ;	, x9[?], f9[?]
 product_9_f:
 	;prologo
-	push rbp
-	mov rbp, rsp
+	push RBP
+	mov RBP, RSP
 
 	;convertimos los flotantes de cada registro xmm en doubles
 	cvtss2sd xmm0,xmm0 
@@ -193,19 +188,19 @@ product_9_f:
 
 	; convertimos los enteros en doubles y los multiplicamos por xmm0.
 	; COMPLETAR
-  cvtsi2sd xmm1, eax
+  cvtsi2sd xmm1, EAX
   mulsd xmm0,xmm1
-  cvtsi2sd xmm1, ebx
+  cvtsi2sd xmm1, EBX
   mulsd xmm0,xmm1
-  cvtsi2sd xmm1, ecx
+  cvtsi2sd xmm1, ECX
   mulsd xmm0,xmm1
-  cvtsi2sd xmm1, edx
+  cvtsi2sd xmm1, EDX
   mulsd xmm0,xmm1
-  cvtsi2sd xmm1, esi
+  cvtsi2sd xmm1, ESI
   mulsd xmm0,xmm1
-  cvtsi2sd xmm1, ebp
+  cvtsi2sd xmm1, EBP
   mulsd xmm0,xmm1
-  cvtsi2sd xmm1, esp
+  cvtsi2sd xmm1, ESP
   mulsd xmm0,xmm1 
   ; muevo los que tenia en el stack
   cvtsi2sd xmm1, [RBP + 0x10]
@@ -214,6 +209,6 @@ product_9_f:
   movd [RDI], xmm0
 
 	; epilogo
-	pop rbp
+	pop RBP
 	ret
 
