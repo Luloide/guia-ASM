@@ -157,9 +157,9 @@ product_2_f:
 ;, uint32_t x1, float f1, uint32_t x2, float f2, uint32_t x3, float f3, uint32_t x4, float f4
 ;, uint32_t x5, float f5, uint32_t x6, float f6, uint32_t x7, float f7, uint32_t x8, float f8
 ;, uint32_t x9, float f9);
-;registros y pila: destination[xmm0], x1[eax], f1[xmm0], x2[ebx], f2[xmm1], x3[ecx], f3[xmm2], x4[edx], f4[xmm3]
-;	, x5[esi], f5[xmm4], x6[RBP + 0x10], f6[xmm5], x7[RBP + 0x18], f7[xmm6], x8[RBP + 0x20], f8[xmm7],
-;	, x9[RBP + 0x28], f9[xmm8]
+;registros y pila: destination[RDI], x1[EAX], f1[xmm0], x2[EBX], f2[xmm1], x3[ECX], f3[xmm2], x4[EDX], f4[xmm3]
+;	, x5[ESI], f5[xmm4], x6[RBP + 16], f6[xmm5], x7[RBP + 24], f7[xmm6], x8[RBP + 32], f8[xmm7],
+;	, x9[RBP + 40], f9[xmm8]
 product_9_f:
 	;prologo
 	push RBP
@@ -202,14 +202,16 @@ product_9_f:
   mulsd xmm0,xmm1
   ; muevo los que tenia en el stack
   ; faltan 2 remember!!
-  cvtsi2sd xmm1, [RBP + 0x10]
+  cvtsi2sd xmm1, [RBP + 16]
   mulsd xmm0,xmm1
-  cvtsi2sd xmm1, [RBP + 0x18]
+  cvtsi2sd xmm1, [RBP + 24]
   mulsd xmm0,xmm1
-  cvtsi2sd xmm1, [RBP + 0x20]
+  cvtsi2sd xmm1, [RBP + 32]
   mulsd xmm0,xmm1
-  cvtsi2sd xmm1, [RBP + 0x28]
+  cvtsi2sd xmm1, [RBP + 40]
   mulsd xmm0,xmm1
+
+  movsd [RDI], xmm0
 
 
 	; epilogo
