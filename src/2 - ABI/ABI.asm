@@ -157,9 +157,9 @@ product_2_f:
 ;, uint32_t x1, float f1, uint32_t x2, float f2, uint32_t x3, float f3, uint32_t x4, float f4
 ;, uint32_t x5, float f5, uint32_t x6, float f6, uint32_t x7, float f7, uint32_t x8, float f8
 ;, uint32_t x9, float f9);
-;registros y pila: destination[RDI], x1[EAX], f1[xmm0], x2[EBX], f2[xmm1], x3[ECX], f3[xmm2], x4[EDX], f4[xmm3]
-;	, x5[ESI], f5[xmm4], x6[RBP + 16], f6[xmm5], x7[RBP + 24], f7[xmm6], x8[RBP + 32], f8[xmm7],
-;	, x9[RBP + 40], f9[xmm8]
+;registros y pila: destination[RDI], x1[RSI], f1[xmm0], x2[RDX], f2[xmm1], x3[RCX], f3[xmm2], x4[R8], f4[xmm3]
+;	, x5[R)], f5[xmm4], x6[RBP + 16], f6[xmm5], x7[RBP + 24], f7[xmm6], x8[RBP + 32], f8[xmm7],
+;	, x9[RBP + 40], f9[RBP + 48]
 product_9_f:
 	;prologo
 	push RBP
@@ -174,7 +174,7 @@ product_9_f:
   cvtss2sd xmm5,xmm5 
   cvtss2sd xmm6,xmm6 
   cvtss2sd xmm7,xmm7 
-  cvtss2sd xmm8,xmm8
+  cvtss2sd xmm8, [RBP + 48]
  
 
 	;multiplicamos los doubles en xmm0 <- xmm0 * xmm1, xmmo * xmm2 , ...
@@ -190,18 +190,18 @@ product_9_f:
 
 	; convertimos los enteros en doubles y los multiplicamos por xmm0.
 	; COMPLETAR
-  cvtsi2sd xmm1, EAX
+  cvtsi2sd xmm1, RSI
   mulsd xmm0,xmm1
-  cvtsi2sd xmm1, EBX
+  cvtsi2sd xmm1, RDX
   mulsd xmm0,xmm1
-  cvtsi2sd xmm1, ECX
+  cvtsi2sd xmm1, RCX
   mulsd xmm0,xmm1
-  cvtsi2sd xmm1, EDX
+  cvtsi2sd xmm1, R8
   mulsd xmm0,xmm1
-  cvtsi2sd xmm1, ESI
+  cvtsi2sd xmm1, R9
   mulsd xmm0,xmm1
+  
   ; muevo los que tenia en el stack
-  ; faltan 2 remember!!
   cvtsi2sd xmm1, [RBP + 16]
   mulsd xmm0,xmm1
   cvtsi2sd xmm1, [RBP + 24]
@@ -211,8 +211,8 @@ product_9_f:
   cvtsi2sd xmm1, [RBP + 40]
   mulsd xmm0,xmm1
 
+  ;muevo el valor a RDI
   movsd [RDI], xmm0
-
 
 	; epilogo
 	pop RBP
